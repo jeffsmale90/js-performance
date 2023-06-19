@@ -1,8 +1,4 @@
-const {
-  buildForEachSuite,
-  buildMapSuite,
-  buildReduceSuite,
-} = require("./benchmarks");
+const { buildStringBuilderSuite } = require("./benchmarks");
 
 function runSuite(suite) {
   console.log(`\nBenchmarking ${suite.name}:`);
@@ -17,20 +13,22 @@ function runSuite(suite) {
     .run();
 }
 
-function generateTestArray() {
+const alphabet = "abcdefghijklmnopqrstuvwxyz ";
+
+function generateTestArray(arrayLength) {
   const result = [];
-  for (let i = 0; i < 1000000; ++i) {
-    result.push({
-      a: i,
-      b: i / 2,
-      r: 0,
-    });
+  for (let i = 0; i < arrayLength; ++i) {
+    const length = Math.floor(Math.random() * 20 + 3);
+    const element = [...new Array(length)]
+      .map((i) => alphabet[Math.floor(Math.random() * alphabet.length)])
+      .join("");
+    result.push(element);
   }
+
   return result;
 }
+for (let i = 1; i < 10; i++) {
+  const testArray = generateTestArray(10 ** i);
 
-const testArray = generateTestArray();
-
-runSuite(buildForEachSuite(testArray));
-runSuite(buildMapSuite(testArray));
-runSuite(buildReduceSuite(testArray));
+  runSuite(buildStringBuilderSuite(testArray));
+}
